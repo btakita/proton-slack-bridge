@@ -1,0 +1,6 @@
+.idea
+.mise.toml
+.python-version
+
+__pycache__/
+dist/

@@ -1,0 +1,169 @@
+[project]
+name = "proton-slack-bridge"
+version = "0.1.0"
+description = "A service to connect Proton Mail Bridge with Slack"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Brian Takita", email = "brian.takita@gmail.com" }
+]
+maintainers = [
+    { name = "Brian Takita", email = "brian.takita@gmail.com" }
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities"
+]
+keywords = ["proton", "proton-mail-bridge", "slack"]
+requires-python = ">=3.12"
+dependencies = [
+    "msgspec==0.20.0",
+    "requests==2.32.5",
+]
+
+[project.scripts]
+proton-slack-bridge = "proton_slack_bridge.cli:main"
+
+[project.urls]
+"Homepage" = "https://github.com/btakita/proton-slack-bridge"
+"Bug Reports" = "https://github.com/btakita/proton-slack-bridge/issues"
+"Source" = "https://github.com/btakita/proton-slack-bridge"
+
+[project.optional-dependencies]
+dev = [
+    "build==1.4.0",
+    "poethepoet==0.40.0",
+    "pytest-cov==7.0.0",
+    "pytest==9.0.2",
+    "ruff==0.14.14",
+    "ty==0.0.14",
+    "types-requests==2.32.4.20260107",
+    "twine==6.2.0",
+]
+
+[dependency-groups]
+dev = ["proton-slack-bridge[dev]"]
+
+[build-system]
+requires = ["uv_build>=0.9.21,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+default-groups = ["dev"]
+python-preference = "only-managed"
+package = true
+
+[tool.poe.tasks]
+precommit = ["ty", "ruff_fix", "test"]
+ruff_fix = "ruff check --fix"
+ty = "ty check src"
+test = "pytest tests/ -v"
+
+[tool.ruff]
+target-version = "py314"
+
+# Set the maximum line length to 88 (Black's default)
+line-length = 88
+
+# Enable auto-fixing for fixable rules
+fix = true
+
+# Exclude common directories
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+
+[tool.ruff.lint]
+# Enable these rule categories
+select = [
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "F", # Pyflakes
+    "I", # isort
+    "B", # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+    "ARG", # flake8-unused-arguments
+    "C90", # McCabe complexity
+    "T20", # flake8-print
+    "SIM", # flake8-simplify
+    "TCH", # flake8-type-checking
+    "RUF", # Ruff-specific rules
+]
+
+# Disable specific rules that might be too strict for your use case
+ignore = [
+    "E501", # Line too long (handled by line-length setting)
+    "B008", # Do not perform function calls in argument defaults
+    "C901", # Too complex (let McCabe complexity handle this)
+    "T201", # Print found (useful for debugging)
+    "ARG002", # Unused method argument (common in inheritance)
+    "SIM108", # Use ternary operator (sometimes if/else is clearer)
+]
+
+# Allow unused variables when they start with an underscore
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.per-file-ignores]
+# Tests can use assertions and have longer lines for readability
+"tests/**/*" = [
+    "S101", # Use of assert
+    "ARG001", # Unused function argument
+    "ARG005", # Unused lambda argument
+    "SIM117", # Use a single with statement
+]
+
+# __init__.py files can have unused imports (for re-exporting)
+"__init__.py" = [
+    "F401", # Unused import
+]
+
+[tool.ruff.lint.isort]
+# Configure import sorting to match your preferences
+known-first-party = ["proton-mail-bridge"]
+force-single-line = false
+lines-after-imports = 2
+
+[tool.ruff.lint.mccabe]
+# Set the maximum complexity threshold
+max-complexity = 10
+
+[tool.ruff.format]
+# Use double quotes for strings
+quote-style = "double"
+
+# Use spaces around the equals sign in keyword arguments
+indent-style = "space"
+
+# Automatically format docstrings
+docstring-code-format = true
+
+# Use trailing commas
+skip-magic-trailing-comma = false
